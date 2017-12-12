@@ -42,8 +42,3 @@ pub fn indent_lookup(indent: &str) -> Token {
     }
 }
 
-#[test]
-fn test_indent_lookup() {
-    assert_eq!(indent_lookup("2"), Token::Indent(String::from("2")));
-    assert_eq!(indent_lookup("/"), Token::Frac);
-}

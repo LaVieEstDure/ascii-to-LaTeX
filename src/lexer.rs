@@ -13,7 +13,7 @@ impl<'a> Lexer<'a> {
         Lexer {input: input.chars().peekable()}
     }
 
-    pub fn read_char(&mut self) -> Option<char> {
+    pub fn read_next_char(&mut self) -> Option<char> {
         self.input.next()
     }
 
@@ -23,7 +23,7 @@ impl<'a> Lexer<'a> {
 
     pub fn peek_is_letter(&mut self) -> bool {
         match self.peek_char() {
-            Some(&c) => is_letter(c),
+            Some(&c) => c.is_alphabetic(),
             None => false
         }
     }
@@ -32,38 +32,26 @@ impl<'a> Lexer<'a> {
         let mut identifier = String::new();
         identifier.push(first_char);
         while self.peek_is_letter() {
-            identifier.push(self.read_char().unwrap());
+            identifier.push(self.read_next_char().unwrap());
         }
         identifier
     }
 
     pub fn next_token(&mut self) -> Token {
-        match self.read_char() {
+        match self.read_next_char() {
             Some('/') => Token::Frac,
-            Some(c @ _) => {
-                if is_letter(c) {
+            Some(c) => {
+                if c.is_alphabetic() {
                     let identifier = self.read_identifier(c);
                     token::indent_lookup(&identifier)
+                } else if c.is_whitespace() {
+                    Token::Whitespace
                 } else {
                     Token::Illegal
                 }
             }
+
             None => Token::EOF
             }
         }
     }
-
-
-fn is_letter(ch: char) -> bool {
-    ch.is_alphabetic() || ch == '_'
-}
-
-#[test]
-fn is_letter_test() {
-    assert!(is_letter('_'));
-    assert!(is_letter('a'));
-    assert!(is_letter('Z'));
-
-    assert!(!is_letter('*'));
-    assert!(!is_letter('1'));
-}
