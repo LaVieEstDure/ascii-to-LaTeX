@@ -5,25 +5,44 @@ use std::str::Chars;
 use std::iter::Peekable;
 
 pub struct Lexer<'a> {
-    input: Peekable<Chars<'a>>,
+    text: Peekable<Chars<'a>>,
+}
+
+impl<'a> Iterator for Lexer<'a> {
+    type Item = Token;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        match self.next_token() {
+            Token::EOF => None,
+            c => Some(c)
+        }
+    }
 }
 
 impl<'a> Lexer<'a> {
     pub fn new(input: &str) -> Lexer {
-        Lexer {input: input.chars().peekable()}
+        Lexer {text: input.chars().peekable()}
     }
 
-    pub fn read_next_char(&mut self) -> Option<char> {
-        self.input.next()
+    pub fn next(&mut self) -> Option<char> {
+        self.text.next()
     }
 
-    pub fn peek_char(&mut self) -> Option<&char> {
-        self.input.peek()
+    pub fn peek(&mut self) -> Option<&char> {
+        self.text.peek()
     }
 
-    pub fn peek_is_letter(&mut self) -> bool {
-        match self.peek_char() {
+    pub fn next_is_letter(&mut self) -> bool {
+        match self.peek() {
             Some(&c) => c.is_alphabetic(),
+            None => false
+        }
+    }
+
+    pub fn next_is_numeric(&mut self) -> bool {
+        match self.peek() {
+            Some(&'.') => true,
+            Some(&c) => c.is_numeric(),
             None => false
         }
     }
@@ -31,26 +50,40 @@ impl<'a> Lexer<'a> {
     pub fn read_identifier(&mut self, first_char: char) -> String {
         let mut identifier = String::new();
         identifier.push(first_char);
-        while self.peek_is_letter() {
-            identifier.push(self.read_next_char().unwrap());
+        while self.next_is_letter() {
+            identifier.push(self.next().unwrap());
         }
         identifier
     }
 
+    pub fn read_number(&mut self, first_char: char) -> f64 {
+        let mut identifier = String::new();
+        identifier.push(first_char);
+        while self.next_is_numeric() {
+            identifier.push(self.next().unwrap());
+        }
+        identifier.parse::<f64>().unwrap()
+    }
+
     pub fn next_token(&mut self) -> Token {
-        match self.read_next_char() {
+        match self.next() {
             Some('/') => Token::Frac,
+            Some('+') => Token::Plus,
+            Some('(') => Token::LeftParenth,
+            Some(')') => Token::RightParenth,
             Some(c) => {
                 if c.is_alphabetic() {
                     let identifier = self.read_identifier(c);
                     token::indent_lookup(&identifier)
                 } else if c.is_whitespace() {
                     Token::Whitespace
+                } else if c.is_numeric() {
+                    let identifier = self.read_number(c);
+                    Token::Number(identifier)
                 } else {
                     Token::Illegal
                 }
             }
-
             None => Token::EOF
             }
         }

@@ -6,6 +6,7 @@ pub enum Token{
 
     Indent(String),
     Integer(String),
+    Number(f64),
 
     Plus,
     Minus,
@@ -24,9 +25,14 @@ pub enum Token{
     RightBrace,
     Whitespace,
 
+    //Constants
+    Pi,
+    E,
+
     //Keywords
     Root,
-    Frac
+    Frac,
+    Sin
 }
 
 impl Default for Token {
@@ -37,7 +43,10 @@ impl Default for Token {
 
 pub fn indent_lookup(indent: &str) -> Token {
     match indent {
-        "/" => Token::Frac,
+        "sin" => Token::Sin,
+        "sqrt" => Token::Root,
+        "pi" => Token::Pi,
+        "e" => Token::E,
         _ => Token::Indent(indent.to_string())
     }
 }
