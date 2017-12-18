@@ -6,7 +6,7 @@ pub enum Token{
 
     Indent(String),
     Integer(String),
-    Number(f64),
+    Number(String),
 
     Plus,
     Minus,

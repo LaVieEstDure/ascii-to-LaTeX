@@ -24,7 +24,7 @@ impl<'a> Lexer<'a> {
         Lexer {text: input.chars().peekable()}
     }
 
-    pub fn next(&mut self) -> Option<char> {
+    pub fn next_char(&mut self) -> Option<char> {
         self.text.next()
     }
 
@@ -51,22 +51,22 @@ impl<'a> Lexer<'a> {
         let mut identifier = String::new();
         identifier.push(first_char);
         while self.next_is_letter() {
-            identifier.push(self.next().unwrap());
+            identifier.push(self.next_char().unwrap());
         }
         identifier
     }
 
-    pub fn read_number(&mut self, first_char: char) -> f64 {
+    pub fn read_number(&mut self, first_char: char) -> String {
         let mut identifier = String::new();
         identifier.push(first_char);
         while self.next_is_numeric() {
-            identifier.push(self.next().unwrap());
+            identifier.push(self.next_char().unwrap());
         }
-        identifier.parse::<f64>().unwrap()
+        identifier
     }
 
     pub fn next_token(&mut self) -> Token {
-        match self.next() {
+        match self.next_char() {
             Some('/') => Token::Frac,
             Some('+') => Token::Plus,
             Some('(') => Token::LeftParenth,
@@ -84,6 +84,7 @@ impl<'a> Lexer<'a> {
                     Token::Illegal
                 }
             }
+
             None => Token::EOF
             }
         }
