@@ -32,7 +32,9 @@ pub enum Token{
     //Keywords
     Root,
     Frac,
-    Sin
+    Sin,
+    Cos,
+    Tan
 }
 
 impl Default for Token {

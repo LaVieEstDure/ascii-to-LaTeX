@@ -71,6 +71,7 @@ impl<'a> Lexer<'a> {
             Some('+') => Token::Plus,
             Some('(') => Token::LeftParenth,
             Some(')') => Token::RightParenth,
+            Some('*') => Token::Multiply,
             Some(c) => {
                 if c.is_alphabetic() {
                     let identifier = self.read_identifier(c);
