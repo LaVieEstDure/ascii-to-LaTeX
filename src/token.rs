@@ -30,7 +30,7 @@ pub enum Token{
     E,
 
     //Keywords
-    Root,
+    Sqrt,
     Frac,
     Sin,
     Cos,
@@ -46,7 +46,9 @@ impl Default for Token {
 pub fn indent_lookup(indent: &str) -> Token {
     match indent {
         "sin" => Token::Sin,
-        "sqrt" => Token::Root,
+        "cos" => Token::Cos,
+        "tan" => Token::Tan,
+        "sqrt" => Token::Sqrt,
         "pi" => Token::Pi,
         "e" => Token::E,
         _ => Token::Indent(indent.to_string())

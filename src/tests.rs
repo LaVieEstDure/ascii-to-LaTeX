@@ -1,6 +1,8 @@
 use lexer;
 use token::Token;
 use token;
+use ::ast;
+use parser::Expression;
 
 #[test]
 fn test_indent_lookup() {
@@ -21,4 +23,20 @@ fn test_lexer(){
     for i in results {
         assert_eq!(i, x.next_token());
     }
+}
+
+#[test]
+fn test_parser(){
+    let input = "sin(cos(a))";
+    assert_eq!(ast(input),
+               Expression::Unary(
+                    Token::Sin, 
+                    Box::new(
+                        Expression::Unary(
+                            Token::Cos, 
+                            Box::new(Expression::Indent("a".to_string()))
+                        )
+                    )
+                )
+               );
 }
