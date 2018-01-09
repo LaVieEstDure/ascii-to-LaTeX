@@ -1,5 +1,5 @@
 [package]
-name = "mathparser"
+name = "ascii2latex"
 version = "0.1.0"
 authors = ["LaVieEstDure <mishraraghav24@gmail.com>"]
 
