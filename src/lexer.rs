@@ -72,6 +72,25 @@ impl<'a> Lexer<'a> {
             Some('(') => Token::LeftParenth,
             Some(')') => Token::RightParenth,
             Some('*') => Token::Multiply,
+            Some('^') => Token::Super,
+            Some('_') => Token::Sub,
+            Some('=') => Token::Equal,
+            Some('<') => {
+                if self.peek() == Some(&'=') {
+                    self.next_char();
+                    Token::LessEq
+                } else {
+                    Token::Less
+                }
+            },
+            Some('>') => {
+                if self.peek() == Some(&'=') {
+                    self.next_char();
+                    Token::GreatEq
+                } else {
+                    Token::Greater
+                }
+            },
             Some(c) => {
                 if c.is_alphabetic() {
                     let identifier = self.read_identifier(c);

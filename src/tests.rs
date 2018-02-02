@@ -9,7 +9,7 @@ fn test_indent_lookup() {
     assert_eq!(token::indent_lookup("2"), Token::Indent(String::from("2")));
     assert_eq!(token::indent_lookup("SADlj"), Token::Indent(String::from("SADlj")));
     assert_eq!(token::indent_lookup("sin"), Token::Sin);
-    assert_eq!(token::indent_lookup("sqrt"), Token::Root);
+    assert_eq!(token::indent_lookup("sqrt"), Token::Sqrt);
 }
 
 #[test]

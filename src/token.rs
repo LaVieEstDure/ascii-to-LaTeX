@@ -13,6 +13,8 @@ pub enum Token{
     Multiply,   
     Divide,
     Greater,
+    Super,
+    Sub,
     Equal,
     Less,
     GreatEq,
@@ -21,8 +23,8 @@ pub enum Token{
     // Delimiters
     LeftParenth,
     RightParenth,
-    LeftBrace,
-    RightBrace,
+    LeftBrace, // Keep the braces for now
+    RightBrace, // Will be used later
     Whitespace,
 
     //Constants
@@ -34,7 +36,8 @@ pub enum Token{
     Frac,
     Sin,
     Cos,
-    Tan
+    Tan,
+    Int
 }
 
 impl Default for Token {

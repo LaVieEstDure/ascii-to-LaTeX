@@ -6,6 +6,7 @@ use lexer;
 pub enum Expression {
     Indent(String),
     Number(String),
+    Constant(Token),
     Unary(Token, Box<Expression>),
     BinaryExpr(Box<Expression>, Operation, Box<Expression>),
     Boxed(Box<Expression>)
@@ -16,11 +17,14 @@ pub enum Operation {
     Divide,
     Add,
     Subtract,
-    Multiply
-}
-
-struct Parser<'a> {
-    equation: lexer::Lexer<'a>
+    Multiply,
+    Pow,
+    Sub,
+    Equals,
+    Less,
+    LessEq,
+    Greater,
+    GreaterEq
 }
 
 pub fn parse (eq: &mut lexer::Lexer) -> Result<Expression, String> {
@@ -39,6 +43,7 @@ fn skip_whitespace<I> (eq: &mut Peekable<I>)
 
 fn get_priority(token: &Token) -> u8 {
     match *token {
+        Token::Super => 4,
         Token::Multiply 
         | Token::Divide
         | Token::Frac => 3,
@@ -52,7 +57,6 @@ fn parse_expression<I> (eq: &mut Peekable<I>, priority: u8, parenth_opened: bool
     
     let mut expression = parse_prefix_expr(eq).unwrap();
     let mut next_priority: u8;
-    let mut just_opened = false;
     loop {
         if let Some(next_token) = eq.peek() {
             next_priority = get_priority(&next_token);
@@ -90,7 +94,14 @@ fn is_infix_op(token: &Token) -> bool {
         | Token::Minus
         | Token::Multiply
         | Token::Divide
-        | Token::Frac => true,
+        | Token::Frac
+        | Token::Super
+        | Token::Sub
+        | Token::Equal
+        | Token::Greater
+        | Token::GreatEq
+        | Token::Less
+        | Token::LessEq => true,
         
         _ => false
     }
@@ -107,6 +118,13 @@ fn parse_infix_expr<I>(first: Expression, eq: &mut Peekable<I>, priority: u8) ->
                     Token::Minus => Operation::Subtract,
                     Token::Divide | Token::Frac => Operation::Divide,
                     Token::Multiply => Operation::Multiply,
+                    Token::Super => Operation::Pow,
+                    Token::Sub => Operation::Sub,
+                    Token::Equal => Operation::Equals,
+                    Token::Less => Operation::Less,
+                    Token::LessEq => Operation::LessEq,
+                    Token::Greater => Operation::Greater,
+                    Token::GreatEq => Operation::GreaterEq,
                     _ => panic!("Not operator")
                 };
                 let right = parse_expression(eq, priority, false).unwrap();
