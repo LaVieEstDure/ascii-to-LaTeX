@@ -2,6 +2,11 @@ use token::Token;
 use std::iter::Peekable;
 use lexer;
 
+// TODO: Rename Operation to InfixOp and have a separate enum
+// for other kinds of operations (functions et al)
+// The fact that Expressions are split between multiple 
+// Enums is really confusing and hard to follow
+
 #[derive(Debug,PartialEq)] 
 pub enum Expression {
     Indent(String),
